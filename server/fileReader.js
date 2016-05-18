@@ -20,7 +20,10 @@ function getDirectories(path){
     var array = fs.readdirSync(path);
     var object = {};
     for(var i = 0; i<array.length; i++){
-        if(excludeDir.indexOf(array[i])>-1) {++i;}
+        //if(excludeDir.indexOf(array[i])>-1) {++i;}
+        //excluding more than one directory in a row
+        while(excludeDir.indexOf(array[i])>-1) {++i;}
+        
         if(checkDirectory(path + '/' + array[i])){
             object[array[i]] = {
                 children: getDirectories(path + '/' + array[i]),
