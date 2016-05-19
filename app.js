@@ -31,7 +31,7 @@ app.get("/getcomments", cors(), function(req, res){
 
 app.post("/postComments", cors(), function(req, res) {
     console.log(req.body);
-    commentsArray.push(req.body);
+    //commentsArray.push(req.body);
     saveDocument(req.body, function(info){
        console.log("Info: " + info);
        res.send(info);
