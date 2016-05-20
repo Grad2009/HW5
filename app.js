@@ -30,9 +30,25 @@ app.get("/getcomments", cors(), function(req, res){
 
 
 app.post("/postComments", cors(), function(req, res) {
-    console.log(req.body);
-    //commentsArray.push(req.body);
+    //console.log(req.body);
     saveDocument(req.body, function(info){
+    //console.log("Info: " + info);
+       res.send(info);
+    });
+});
+
+app.post("/delComments", cors(), function(req, res) {
+    //console.log(req.body);
+    deleteDocument(req.body, function(info){
+    //console.log("Info: " + info);
+       res.send(info);
+    });
+});
+
+app.post("/editComments", cors(), function(req, res) {
+    console.log(req.body);
+    //debugger;
+    editDocument(req.body, function(info){
        console.log("Info: " + info);
        res.send(info);
     });
@@ -54,6 +70,18 @@ function findDocuments(callback){
 
 function saveDocument(document, callback){
     dbase.saveComment(document, function(info){
+        callback(info);
+    });
+}
+
+function deleteDocument(document, callback){
+    dbase.delComment(document, function(info){
+        callback(info);
+    });
+}
+
+function editDocument(document, callback){
+    dbase.editComment(document, function(info){
         callback(info);
     });
 }

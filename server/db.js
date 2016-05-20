@@ -48,3 +48,34 @@ module.exports.saveComment = function(document, callback){
 
     });
 };
+
+module.exports.delComment = function(document, callback){
+    dbClient.connect(dbUrl, function(error, db){
+        assert.equal(error, null);
+        var path = document.path;
+        var comment = document.comment;
+        //var user = document.user;
+        var collection = db.collection('filebrowser');
+        collection.deleteOne({path: path, comment:comment, /*user:user*/}, function(error, result) {
+                assert.equal(error, null);
+                db.close();
+                callback(result);
+            });
+    });
+};
+
+module.exports.editComment = function(document, callback){
+    dbClient.connect(dbUrl, function(error, db){
+        assert.equal(error, null);
+        var path = document.path;
+        var comment = document.comment;
+        var version = document.version;
+        //var user = document.user;
+        var collection = db.collection('filebrowser');
+        collection.updateOne({path:path, comment:comment/*, user:user*/}, {$set: {comment:version}}, function(error, result) {
+                assert.equal(error, null);
+                db.close();
+                callback(result);
+            });
+    });
+};

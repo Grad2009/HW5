@@ -4,14 +4,18 @@ var connectionManager = {
 	serverURL: "https://node-from-lynda-grad2009.c9users.io/",
 	mainButton: document.getElementById('main'),
 	tree: document.getElementById('containerTree')
-}
+};
 
 var comment = {};
 comment.Form = document.getElementById('addComments');
 comment.Text = document.getElementById('commentValue');
 comment.Panel = document.getElementById('allComments');
 comment.header = document.getElementById('commentsHeader');
+comment.onDelete = document.getElementById('delete');
+comment.onEdit = document.getElementById('edit');
 comment.responseFromSrv = [];
+comment.lastRequest = {};
+
 
 connectionManager.mainButton.addEventListener('click', getInfo);
 
@@ -59,21 +63,22 @@ connectionManager.tree.addEventListener('click', function(event) {
 connectionManager.tree.addEventListener('contextmenu', function(event) {
 	event.preventDefault();
 	var target = event.target;
-	if (target.tagName != 'SPAN') {return;}
+	if (target.tagName !== 'SPAN') {return;}
 	selectItem(target);
 	//delete comments from previous item
-	if (comment.lastSelected) {
-		comment.Panel.innerHTML = '';
-	}
+	//comment.Panel.innerHTML = '';
 	//show responsed comments in commentPanel
 	comment.header.textContent = target.getAttribute('data-path');
 	showComment(comment.header.textContent, comment.responseFromSrv);
-	comment.lastSelected = target;
+	comment.lastSelectedItem = target;
+	comment.lastSelected = null;
 	return false;
 	});
 
 function selectItem(seleсtedItem) {
-	if (comment.lastSelected) {
+	if (comment.lastSelectedItem) {
+		comment.lastSelectedItem.classList.remove('selected');
+	} else if (comment.lastSelected) {
 		comment.lastSelected.classList.remove('selected');
 	}
     seleсtedItem.classList.add('selected');
@@ -82,8 +87,8 @@ function selectItem(seleсtedItem) {
 	
 
 comment.Form.addEventListener('submit', function(e) {
-	/// add comment to comment panel;
-	if (comment.Text.value && comment.lastSelected) {
+	// add comment to comment panel;
+	if (comment.Text.value && comment.lastSelectedItem) {
 	e.preventDefault();
 	console.log(comment.Text.value);
 	printComment(comment.Text.value);
@@ -91,11 +96,73 @@ comment.Form.addEventListener('submit', function(e) {
 	} else {
 		alert('You have to choose some item to comment!');
 	}
+	if (comment.tmp === '{"ok":1,"n":1}') {
+		comment.responseFromSrv.push(comment.lastRequest);
+		console.log('Comments array after changing:' + comment.responseFromSrv);
+	}
 });
 
-function printComment(printedText) {
+comment.Panel.addEventListener('contextmenu', function(e) {
+	event.preventDefault();
+	var target = event.target;
+	if (target.tagName !== "P") {return;}
+	selectItem(target);
+	comment.lastSelected = target;
+	comment.onPanel = target.textContent;
+	comment.lastSelectedItem = null;
+	
+	//init getComments request in order 
+	//to update the data-id of added comments
+	/*if (target.getAttribute('data-id') === "undefined") {
+		getComments('getcomments').onload = function() {
+		showComment(comment.header.textContent, comment.responseFromSrv);
+		selectItem(target);
+		}
+		/*asyncGetComments('getcomments')
+			.then(
+				responce => {
+					showComment(comment.header.textContent, comment.responseFromSrv);
+					selectItem(target);
+					return;
+				},
+				error => alert('Cannot synchronize with server')
+			);
+			
+	}	
+	*/
+	return false;
+});
+
+comment.onDelete.addEventListener('click', function(e) {
+	if (comment.lastSelected) {
+		var answerDel = confirm('Are you shure to delete?');
+		if (answerDel) {
+		deleteComment(comment.header.textContent, comment.onPanel);
+		//comment.Text.value = '';
+		} else {
+			return;
+		}
+	}
+});
+
+comment.onEdit.addEventListener('click', function(e) {
+	if (comment.lastSelected) {
+		var answerEdit = prompt('Enter new version of your comment');
+		if (answerEdit) {
+			editComment(comment.header.textContent, comment.onPanel, answerEdit);
+			comment.lastSelected.textContent = answerEdit;
+		}
+	} else {
+		alert('You need to choose some comment!');
+		return;
+	}
+	
+});
+
+function printComment(printedText, id) {
 	var newComment = document.createElement('p');
-	newComment.innerHTML = /*'<strong>'+ data.user + '</strong>: '+*/printedText + '<br/>';
+	newComment.innerHTML = /*'<strong>'+ data.user + '</strong>: '+*/printedText;
+	newComment.setAttribute('data-id', id);
     comment.Panel.appendChild(newComment, comment.Panel.children[0]);
 }
 
@@ -106,14 +173,38 @@ function postComment(selectedItemPath, printedText) {
 		comment: printedText
 	//	user: user
 	};
+	comment.lastRequest = request;
 	postQuery(connectionManager.serverURL + 'postComments', request);
 	comment.Text.value = '';
 }
 
 function showComment(selectedItemPath, data) {
+	comment.Panel.innerHTML = '';
 	for (var dataElement in data) {
 		if (data[dataElement].path === selectedItemPath) {
-			printComment(data[dataElement].comment);
+			printComment(data[dataElement].comment, data[dataElement]._id);
 		}
 	}
+}
+
+function deleteComment(selectedItemPath, printedText) {
+	var request = {
+		path: selectedItemPath,
+		comment: printedText
+	//	user: user
+	};
+	comment.lastDelRequest = request;
+	postQuery(connectionManager.serverURL + 'delComments', request);
+	comment.lastSelected.remove();
+}
+
+function editComment(selectedItemPath, previosText, newText) {
+	var request = {
+		path: selectedItemPath,
+		comment: previosText,
+		version: newText
+	//	user: user
+	};
+	comment.lastDelRequest = request;
+	postQuery(connectionManager.serverURL + 'editComments', request);
 }
