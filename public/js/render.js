@@ -198,7 +198,7 @@ function deleteComment(selectedItemPath, printedText) {
 	postQuery(connectionManager.serverURL + 'delComments', request);
 	comment.lastSelected.remove();
 	//need callback for correct handling the response from server
-	/*if (comment.tmp === '{"ok":1,"n":1}') {
+	if (comment.tmp === '{"ok":1,"n":1}') {
 		var count = 0;
 		for (var dataElement in data) {
 			if (data[dataElement].path === selectedItemPath &&
@@ -209,7 +209,7 @@ function deleteComment(selectedItemPath, printedText) {
 		}
 		comment.responseFromSrv.splice(index);
 	}
-	*/
+	
 }
 
 function editComment(selectedItemPath, previosText, newText) {
@@ -223,7 +223,7 @@ function editComment(selectedItemPath, previosText, newText) {
 	postQuery(connectionManager.serverURL + 'editComments', request);
 	
 	//need callback for correct handling the response from server
-	/*if (comment.tmp === '{"ok":1,"n":1}') {
+	if (comment.tmp === '{"ok":1,"n":1}') {
 		var count = 0;
 		for (var dataElement in data) {
 			if (data[dataElement].path === selectedItemPath &&
@@ -233,5 +233,5 @@ function editComment(selectedItemPath, previosText, newText) {
 		}
 		comment.responseFromSrv.splice(index, newText);
 	}
-	*/
+	
 }
