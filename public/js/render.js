@@ -98,10 +98,10 @@ comment.Form.addEventListener('submit', function(e) {
 	}
 
 	//need callback for correct handling the response from server
-	if (comment.tmp === '{"ok":1,"n":1}') {
+	//if (comment.tmp === '{"ok":1,"n":1}') {
 		comment.responseFromSrv.push(comment.lastRequest);
 		console.log('Comments array after changing:' + comment.responseFromSrv);
-	}
+	//}
 });
 
 comment.Panel.addEventListener('contextmenu', function(e) {
@@ -198,17 +198,17 @@ function deleteComment(selectedItemPath, printedText) {
 	postQuery(connectionManager.serverURL + 'delComments', request);
 	comment.lastSelected.remove();
 	//need callback for correct handling the response from server
-	if (comment.tmp === '{"ok":1,"n":1}') {
+	//if (comment.tmp === '{"ok":1,"n":1}') {
 		var count = 0;
-		for (var dataElement in data) {
-			if (data[dataElement].path === selectedItemPath &&
-				data[dataElement].comment === printedText) {
+		for (var dataElement in comment.responseFromSrv) {
+			if (comment.responseFromSrv[dataElement].path === selectedItemPath &&
+				comment.responseFromSrv[dataElement].comment === printedText) {
 			var index = count;
 			}
 		count++;
 		}
-		comment.responseFromSrv.splice(index);
-	}
+		comment.responseFromSrv.splice(index, 1);
+	//}
 	
 }
 
@@ -223,15 +223,21 @@ function editComment(selectedItemPath, previosText, newText) {
 	postQuery(connectionManager.serverURL + 'editComments', request);
 	
 	//need callback for correct handling the response from server
-	if (comment.tmp === '{"ok":1,"n":1}') {
+	//if (comment.tmp === '{"ok":1,"n":1}') {
+		var editedComment = {
+			path: selectedItemPath,
+			comment: newText
+		};
 		var count = 0;
-		for (var dataElement in data) {
-			if (data[dataElement].path === selectedItemPath &&
-				data[dataElement].comment === previosText) {
+		for (var dataElement in comment.responseFromSrv) {
+			if (comment.responseFromSrv[dataElement].path === selectedItemPath &&
+				comment.responseFromSrv[dataElement].comment === previosText) {
 			var index = count;
+			}
 		count++;
+			
 		}
-		comment.responseFromSrv.splice(index, newText);
-	}
+		comment.responseFromSrv.splice(index, 1, editedComment);
+	//}
 	
 }
