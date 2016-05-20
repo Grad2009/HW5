@@ -96,6 +96,8 @@ comment.Form.addEventListener('submit', function(e) {
 	} else {
 		alert('You have to choose some item to comment!');
 	}
+
+	//need callback for correct handling the response from server
 	if (comment.tmp === '{"ok":1,"n":1}') {
 		comment.responseFromSrv.push(comment.lastRequest);
 		console.log('Comments array after changing:' + comment.responseFromSrv);
@@ -138,7 +140,6 @@ comment.onDelete.addEventListener('click', function(e) {
 		var answerDel = confirm('Are you shure to delete?');
 		if (answerDel) {
 		deleteComment(comment.header.textContent, comment.onPanel);
-		//comment.Text.value = '';
 		} else {
 			return;
 		}
@@ -196,6 +197,19 @@ function deleteComment(selectedItemPath, printedText) {
 	comment.lastDelRequest = request;
 	postQuery(connectionManager.serverURL + 'delComments', request);
 	comment.lastSelected.remove();
+	//need callback for correct handling the response from server
+	/*if (comment.tmp === '{"ok":1,"n":1}') {
+		var count = 0;
+		for (var dataElement in data) {
+			if (data[dataElement].path === selectedItemPath &&
+				data[dataElement].comment === printedText) {
+			var index = count;
+			}
+		count++;
+		}
+		comment.responseFromSrv.splice(index);
+	}
+	*/
 }
 
 function editComment(selectedItemPath, previosText, newText) {
@@ -207,4 +221,17 @@ function editComment(selectedItemPath, previosText, newText) {
 	};
 	comment.lastDelRequest = request;
 	postQuery(connectionManager.serverURL + 'editComments', request);
+	
+	//need callback for correct handling the response from server
+	/*if (comment.tmp === '{"ok":1,"n":1}') {
+		var count = 0;
+		for (var dataElement in data) {
+			if (data[dataElement].path === selectedItemPath &&
+				data[dataElement].comment === previosText) {
+			var index = count;
+		count++;
+		}
+		comment.responseFromSrv.splice(index, newText);
+	}
+	*/
 }
