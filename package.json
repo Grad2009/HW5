@@ -1,0 +1,17 @@
+{
+  "name": "fuile_browser",
+  "version": "0.0.1",
+  "description": "Brows files in current c9 directory",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "VVVinogradov",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "cors": "^2.7.1",
+    "express": "^4.13.4",
+    "mongodb": "^2.1.18"
+  }
+}

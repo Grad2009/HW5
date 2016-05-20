@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no"/>
+    <meta charset="utf-8">
+    <title>File Browser</title>
+    <link rel="stylesheet" href="/css/new.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+
+</head>
+<body class="bg-info">
+
+    <h1>File Browser</h1>
+    
+	<div class="itemInfo">Files browsed from Cloud9 project directory without system ./c9 and ./nodemodules.<br>
+	Left-click - open/close folder. Right-click - choose item for comment (or comment for delete/edit).<br>
+	User login, editing comment - coming soon.
+	</div>
+	
+    <div>
+        <button type="button" id="main">Get list of files/dirs</button>
+    </div>
+    
+  <div class="container">
+	
+	<div class="col-md-6" id="containerTree"></div>
+		
+	<div class="col-md-6">
+		<div class="panel panel-success">
+			<div class="panel-heading">
+				<h3 class="panel-title">Comments to</h3>
+				<h4 class="panel-title" id="commentsHeader"></h4>
+			</div>
+			<div class="panel-body all-comments" id="allComments"></div>
+			
+			<div class="btn-group btn-group-justified">
+			  <div class="btn-group">
+				<button type="button" class="btn btn-warning" id="edit">Edit comment</button>
+			  </div>
+			  <div class="btn-group">
+				<button type="button" class="btn btn-danger" id="delete">Delete comment</button>
+			  </div>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-12">
+	<form class="addComment" id="addComments">
+        <p>Select item to read/write comment</p>
+		<input type="Text" class="commentText" placeholder="add some comments here ..." id="commentValue" required />
+        <input type="submit" value="Add comment">
+    </form>
+    </div>
+
+  </div>
+
+    <script src="/js/connectionManage.js"></script>
+    <script src="/js/render.js"></script>
+
+</body>
+</html>
